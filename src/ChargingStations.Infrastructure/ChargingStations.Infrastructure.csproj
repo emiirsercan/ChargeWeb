@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- NuGet Paketleri -->
+  <ItemGroup>
+    <!-- Redis: Distributed caching -->
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.4" />
+    
+    <!-- HTTP Client: OpenChargeMap gibi dış API'lere istek atmak için -->
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
+  </ItemGroup>
+
+  <!-- Proje Referansları -->
+  <ItemGroup>
+    <!-- Infrastructure → Domain: Entity sınıflarını kullanır -->
+    <ProjectReference Include="..\ChargingStations.Domain\ChargingStations.Domain.csproj" />
+    <!-- Infrastructure → Application: ICacheService gibi interface'leri implement eder -->
+    <ProjectReference Include="..\ChargingStations.Application\ChargingStations.Application.csproj" />
+  </ItemGroup>
+
+</Project>

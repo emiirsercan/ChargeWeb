@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- NuGet Paketleri -->
+  <ItemGroup>
+    <!-- MediatR: CQRS pattern için (Command/Query ayrımı) -->
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    
+    <!-- FluentValidation: Request doğrulama kuralları -->
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+    
+    <!-- AutoMapper: Entity ↔ DTO dönüşümleri -->
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+  </ItemGroup>
+
+  <!-- Proje Referansları -->
+  <ItemGroup>
+    <!-- Application → Domain: Entity'leri ve enum'ları kullanır -->
+    <ProjectReference Include="..\ChargingStations.Domain\ChargingStations.Domain.csproj" />
+    <!-- Application → Shared: Result pattern ve exception'ları kullanır -->
+    <ProjectReference Include="..\ChargingStations.Shared\ChargingStations.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

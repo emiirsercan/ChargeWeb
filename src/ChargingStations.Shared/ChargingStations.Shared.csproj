@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- 
+    Shared katmanı: HİÇBİR bağımlılığı yoktur.
+    Result pattern, custom exception'lar ve sabitler burada tanımlanır.
+    Tüm katmanlar bu projeye referans verebilir.
+  -->
+
+</Project>

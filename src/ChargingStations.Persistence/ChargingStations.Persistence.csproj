@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- NuGet Paketleri -->
+  <ItemGroup>
+    <!-- EF Core: ORM framework -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+
+    <!-- Npgsql: PostgreSQL provider for EF Core -->
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+
+    <!-- NetTopologySuite: Coğrafi veri tipleri (lat/lng, spatial queries) -->
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="9.0.4" />
+
+    <!-- EF Core Tools: Migration oluşturma (design-time) -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Proje Referansları -->
+  <ItemGroup>
+    <!-- Persistence → Domain: Entity sınıflarını DbContext'te kullanır -->
+    <ProjectReference Include="..\ChargingStations.Domain\ChargingStations.Domain.csproj" />
+    <!-- Persistence → Application: Interface'leri implement eder (IStationRepository vs.) -->
+    <ProjectReference Include="..\ChargingStations.Application\ChargingStations.Application.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- NuGet Paketleri -->
+  <ItemGroup>
+    <!-- Swagger: API dokümantasyonu (geliştirme ortamında test için) -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+
+    <!-- JWT Authentication -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
+
+    <!-- Serilog: Structured logging -->
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+
+    <!-- EF Core Design: dotnet ef migrations komutu için gerekli -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Proje Referansları -->
+  <ItemGroup>
+    <!-- API → Application: MediatR üzerinden Command/Query gönderir -->
+    <ProjectReference Include="..\ChargingStations.Application\ChargingStations.Application.csproj" />
+    <!-- API → Persistence: DI'da DbContext ve Repository kayıtları için -->
+    <ProjectReference Include="..\ChargingStations.Persistence\ChargingStations.Persistence.csproj" />
+    <!-- API → Infrastructure: DI'da Redis, Email servisi kayıtları için -->
+    <ProjectReference Include="..\ChargingStations.Infrastructure\ChargingStations.Infrastructure.csproj" />
+    <!-- API → Shared: Result pattern ve exception handling için -->
+    <ProjectReference Include="..\ChargingStations.Shared\ChargingStations.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
