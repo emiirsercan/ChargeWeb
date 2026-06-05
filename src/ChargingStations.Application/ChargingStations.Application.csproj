@@ -17,6 +17,9 @@
     
     <!-- AutoMapper: Entity ↔ DTO dönüşümleri -->
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+
+    <!-- BCrypt: Şifre hash'leme (güvenli, salt-based) -->
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 
   <!-- Proje Referansları -->

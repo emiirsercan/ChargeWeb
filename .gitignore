@@ -1,0 +1,24 @@
+## Ignore Visual Studio & Rider files
+.vs/
+.idea/
+.vscode/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.sln.docstates
+
+## Ignore build outputs
+bin/
+obj/
+publish/
+[Oo]bj/
+[Bb]in/
+
+## Ignore OS-generated files
+.DS_Store
+Thumbs.db
+
+## Ignore tool-generated logs or temporary files
+*.log
+*.log.*
