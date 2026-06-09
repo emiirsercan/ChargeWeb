@@ -8,11 +8,18 @@
 
   <!-- NuGet Paketleri -->
   <ItemGroup>
-    <!-- Redis: Distributed caching -->
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.4" />
-    
+    <!-- JWT: Token üretmek için (gece kulübünün bileklik makinesi) -->
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.7.0" />
+
+    <!-- In-Memory Cache: Veritabanı sorgularını bellekte tutmak için -->
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.4" />
+
     <!-- HTTP Client: OpenChargeMap gibi dış API'lere istek atmak için -->
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
+
+    <!-- DI: IServiceCollection extension metotları için -->
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.4" />
   </ItemGroup>
 
   <!-- Proje Referansları -->

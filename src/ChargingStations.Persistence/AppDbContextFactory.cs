@@ -35,7 +35,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
         // Session Pooler (IPv4) — doğrudan bağlantı
         // Migration aracı için güvenli, runtime'da appsettings.json kullanılır
         optionsBuilder.UseNpgsql(
-            "Host=aws-1-ap-southeast-2.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.yhmjqlxtthzherewwbiy;Password=YOUR_PASSWORD_HERE;SSL Mode=Require;Trust Server Certificate=true",
+            "Host=aws-1-ap-southeast-2.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.yhmjqlxtthzherewwbiy;Password=190501.Emirr;SSL Mode=Require;Trust Server Certificate=true",
             npgsql => npgsql.MigrationsAssembly("ChargingStations.Persistence")
         );
 
