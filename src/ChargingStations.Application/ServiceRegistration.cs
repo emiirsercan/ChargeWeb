@@ -17,7 +17,14 @@ public static class ServiceRegistration
         var assembly = Assembly.GetExecutingAssembly();
 
         // MediatR — tüm Command/Query handler'larını otomatik bulur ve kaydeder
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(assembly);
+
+            // Pipeline Behavior: Request → [Validation] → Handler
+            // Her request handler'a gitmeden önce validator'dan geçer
+            cfg.AddOpenBehavior(typeof(Behaviors.ValidationBehavior<,>));
+        });
 
         // FluentValidation — tüm Validator sınıflarını otomatik bulur
         services.AddValidatorsFromAssembly(assembly);

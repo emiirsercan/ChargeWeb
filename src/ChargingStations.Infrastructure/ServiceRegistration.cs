@@ -27,18 +27,23 @@ public static class ServiceRegistration
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
         // ── TokenService: JWT bileklik üreticisi ──
-        // Scoped: Her HTTP isteği için yeni bir instance
-        // Neden Scoped? → Her request kendi token servisini kullansın
-        // Singleton olsa da olurdu ama Scoped daha güvenli
         services.AddScoped<ITokenService, TokenService>();
 
         // ── CacheService: Bellek not defteri ──
-        // AddMemoryCache(): .NET'in built-in IMemoryCache'ini aktif eder
-        // Singleton: Tüm uygulama boyunca tek bir cache instance
-        // Neden Singleton? → Cache zaten paylaşılan bir kaynak,
-        // herkes aynı not defterini okumalı
         services.AddMemoryCache();
         services.AddSingleton<ICacheService, InMemoryCacheService>();
+
+        // ── OpenChargeMapService: Dış API istemcisi ──
+        // AddHttpClient: HttpClient'ı DI üzerinden yönetir
+        // → Socket exhaustion (bağlantı tükenmesi) sorununu önler
+        // → Her seferinde "new HttpClient()" yazmak KÖTÜ pratiktir!
+        // → .NET HttpClientFactory bunu bizim için yönetir
+        services.AddHttpClient<IOpenChargeMapService, OpenChargeMapService>(client =>
+        {
+            client.BaseAddress = new Uri("https://api.openchargemap.io/v3/");
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.Timeout = TimeSpan.FromSeconds(30);
+        });
 
         return services;
     }

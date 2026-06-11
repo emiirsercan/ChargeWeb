@@ -1,20 +1,14 @@
-using ChargingStations.Domain.Enums;
-
 namespace ChargingStations.Application.DTOs;
 
 /// <summary>
 /// İstasyon listesinde gösterilecek özet bilgiler.
-/// Liste ekranında tüm detaylara gerek yok — sadece temel bilgiler yeterli.
-/// 
-/// DTO (Data Transfer Object) nedir?
-/// Entity doğrudan frontend'e gönderilmez çünkü:
-/// - Navigation property'ler circular reference oluşturur (JSON serialize patlar)
-/// - Bazı alanlar gizli kalmalıdır (örn: PasswordHash)
-/// - Frontend'in ihtiyacı olan veri, DB'deki veriden farklı olabilir
+/// OpenChargeMap'ten gelen veriye uyumlu.
 /// </summary>
 public class StationDto
 {
-    public Guid Id { get; set; }
+    /// <summary>OpenChargeMap ID (integer)</summary>
+    public int OcmId { get; set; }
+
     public string Name { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
@@ -22,18 +16,13 @@ public class StationDto
     public double Latitude { get; set; }
     public double Longitude { get; set; }
     public string OperatorName { get; set; } = string.Empty;
-    public StationStatus Status { get; set; }
-    public bool IsOpen24Hours { get; set; }
 
-    /// <summary>Bu istasyondaki toplam soket sayısı</summary>
+    /// <summary>Durum metni (Operational, Not Operational, vb.)</summary>
+    public string StatusText { get; set; } = string.Empty;
+
+    /// <summary>Bağlantı noktası sayısı</summary>
     public int ConnectorCount { get; set; }
 
-    /// <summary>Müsait soket sayısı</summary>
-    public int AvailableConnectorCount { get; set; }
-
-    /// <summary>Ortalama puan (1-5)</summary>
-    public double AverageRating { get; set; }
-
-    /// <summary>Toplam yorum sayısı</summary>
-    public int ReviewCount { get; set; }
+    /// <summary>Kullanıcıya olan mesafe (km) — nearby sorgusunda dolu</summary>
+    public double? DistanceKm { get; set; }
 }

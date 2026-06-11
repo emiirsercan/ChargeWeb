@@ -92,11 +92,11 @@ public class StationsController : ControllerBase
     ///     reviews: [{ rating: 5, comment: "Harika!" }]
     ///   }
     /// </summary>
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:int}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(StationDetailDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetById(Guid id)
+    public async Task<IActionResult> GetById(int id)
     {
         var query = new GetStationByIdQuery(id);
         var result = await _mediator.Send(query);

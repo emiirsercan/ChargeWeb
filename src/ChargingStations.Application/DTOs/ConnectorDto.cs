@@ -1,23 +1,22 @@
-using ChargingStations.Domain.Enums;
-
 namespace ChargingStations.Application.DTOs;
 
 /// <summary>
-/// Soket bilgisi — istasyon detayında gösterilecek.
+/// Bağlantı noktası (connector) bilgisi — OpenChargeMap formatına uyumlu.
 /// </summary>
 public class ConnectorDto
 {
-    public Guid Id { get; set; }
-    public ConnectorType Type { get; set; }
+    /// <summary>Connector tipi (örn: "CCS (Type 2)", "CHAdeMO", "Type 2")</summary>
+    public string ConnectionType { get; set; } = string.Empty;
 
-    /// <summary>Soket tipinin kullanıcı dostu adı (örn: "CCS (DC Hızlı Şarj)")</summary>
-    public string TypeName { get; set; } = string.Empty;
+    /// <summary>Güç (kW)</summary>
+    public double? PowerKW { get; set; }
 
-    public double PowerKW { get; set; }
-    public ConnectorStatus Status { get; set; }
+    /// <summary>Akım tipi (AC / DC)</summary>
+    public string CurrentType { get; set; } = string.Empty;
 
-    /// <summary>Durumun kullanıcı dostu adı (örn: "Müsait", "Kullanımda")</summary>
-    public string StatusName { get; set; } = string.Empty;
+    /// <summary>Bu tipten kaç adet var</summary>
+    public int? Quantity { get; set; }
 
-    public decimal? PricePerKWh { get; set; }
+    /// <summary>Durum</summary>
+    public string Status { get; set; } = string.Empty;
 }

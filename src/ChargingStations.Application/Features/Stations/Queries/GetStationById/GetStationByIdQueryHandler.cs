@@ -1,85 +1,73 @@
 using ChargingStations.Application.DTOs;
-using ChargingStations.Application.Interfaces.Repositories;
-using ChargingStations.Domain.Enums;
+using ChargingStations.Application.Interfaces;
 using MediatR;
 
 namespace ChargingStations.Application.Features.Stations.Queries.GetStationById;
 
+/// <summary>
+/// Tek istasyonun detayını OpenChargeMap'ten çeker.
+///
+/// ─── SENARYO ───────────────────────────────────────────────
+/// Kullanıcı haritada bir istasyona tıkladı → ID: 54321
+///   1. Cache'e bak: "ocm:station:54321" → yok
+///   2. OpenChargeMap API → chargepointid=54321
+///   3. Detaylı bilgi geldi (connector'lar dahil)
+///   4. Cache'e yaz (10 dakika)
+///   5. Frontend'e dön
+/// </summary>
 public class GetStationByIdQueryHandler : IRequestHandler<GetStationByIdQuery, StationDetailDto?>
 {
-    private readonly IStationRepository _stationRepository;
+    private readonly IOpenChargeMapService _ocmService;
+    private readonly ICacheService _cacheService;
 
-    public GetStationByIdQueryHandler(IStationRepository stationRepository)
+    public GetStationByIdQueryHandler(
+        IOpenChargeMapService ocmService,
+        ICacheService cacheService)
     {
-        _stationRepository = stationRepository;
+        _ocmService = ocmService;
+        _cacheService = cacheService;
     }
 
     public async Task<StationDetailDto?> Handle(GetStationByIdQuery request, CancellationToken cancellationToken)
     {
-        var station = await _stationRepository.GetByIdAsync(request.Id);
+        var cacheKey = $"ocm:station:{request.OcmId}";
+        var cached = await _cacheService.GetAsync<StationDetailDto>(cacheKey);
 
-        if (station is null)
-            return null;
+        if (cached != null)
+            return cached;
 
-        return new StationDetailDto
+        var ocmStation = await _ocmService.GetStationByIdAsync(request.OcmId);
+
+        if (ocmStation is null)
+            throw new KeyNotFoundException($"İstasyon bulunamadı: {request.OcmId}");
+
+        var detail = new StationDetailDto
         {
-            Id = station.Id,
-            Name = station.Name,
-            Address = station.Address,
-            City = station.City,
-            District = station.District,
-            Latitude = station.Latitude,
-            Longitude = station.Longitude,
-            OperatorName = station.OperatorName,
-            Status = station.Status,
-            Description = station.Description,
-            ImageUrl = station.ImageUrl,
-            IsOpen24Hours = station.IsOpen24Hours,
-            PhoneNumber = station.PhoneNumber,
-            CreatedAt = station.CreatedAt,
-            AverageRating = station.Reviews.Any() ? station.Reviews.Average(r => r.Rating) : 0,
-            ReviewCount = station.Reviews.Count,
-            Connectors = station.Connectors.Select(c => new ConnectorDto
+            OcmId = ocmStation.OcmId,
+            Name = ocmStation.Name,
+            Address = ocmStation.Address,
+            City = ocmStation.Town,
+            District = ocmStation.StateOrProvince,
+            Country = ocmStation.Country,
+            Latitude = ocmStation.Latitude,
+            Longitude = ocmStation.Longitude,
+            OperatorName = ocmStation.OperatorName,
+            StatusText = ocmStation.StatusType,
+            UsageType = ocmStation.UsageType,
+            DateLastStatusUpdate = ocmStation.DateLastStatusUpdate,
+            Connectors = ocmStation.Connections.Select(c => new ConnectorDto
             {
-                Id = c.Id,
-                Type = c.Type,
-                TypeName = GetConnectorTypeName(c.Type),
+                ConnectionType = c.ConnectionType,
                 PowerKW = c.PowerKW,
-                Status = c.Status,
-                StatusName = GetConnectorStatusName(c.Status),
-                PricePerKWh = c.PricePerKWh
-            }).ToList(),
-            RecentReviews = station.Reviews
-                .OrderByDescending(r => r.CreatedAt)
-                .Take(10)
-                .Select(r => new ReviewDto
-                {
-                    Id = r.Id,
-                    UserId = r.UserId,
-                    UserFullName = r.User?.FullName ?? "Anonim",
-                    StationId = r.StationId,
-                    Rating = r.Rating,
-                    Comment = r.Comment,
-                    CreatedAt = r.CreatedAt
-                }).ToList()
+                CurrentType = c.CurrentType,
+                Quantity = c.Quantity,
+                Status = c.Status
+            }).ToList()
         };
+
+        // 10 dakika cache'le
+        await _cacheService.SetAsync(cacheKey, detail, TimeSpan.FromMinutes(10));
+
+        return detail;
     }
-
-    private static string GetConnectorTypeName(ConnectorType type) => type switch
-    {
-        ConnectorType.Type1 => "Type 1 (AC)",
-        ConnectorType.Type2 => "Type 2 (AC)",
-        ConnectorType.CCS => "CCS (DC Hızlı Şarj)",
-        ConnectorType.CHAdeMO => "CHAdeMO (DC)",
-        ConnectorType.Tesla => "Tesla Supercharger",
-        _ => type.ToString()
-    };
-
-    private static string GetConnectorStatusName(ConnectorStatus status) => status switch
-    {
-        ConnectorStatus.Available => "Müsait",
-        ConnectorStatus.InUse => "Kullanımda",
-        ConnectorStatus.OutOfService => "Servis Dışı",
-        _ => status.ToString()
-    };
 }
