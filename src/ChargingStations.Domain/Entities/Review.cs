@@ -2,12 +2,6 @@ using ChargingStations.Domain.Common;
 
 namespace ChargingStations.Domain.Entities;
 
-/// <summary>
-/// Yorum/değerlendirme entity'si.
-/// 
-/// Bir kullanıcı bir istasyona yorum + puan bırakabilir.
-/// Rating: 1-5 arası (zorunlu), Comment: opsiyonel metin.
-/// </summary>
 public class Review : BaseEntity
 {
     /// <summary>Yorumu yazan kullanıcı (FK)</summary>

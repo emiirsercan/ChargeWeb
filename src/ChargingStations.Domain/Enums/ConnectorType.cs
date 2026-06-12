@@ -1,9 +1,4 @@
 namespace ChargingStations.Domain.Enums;
-
-/// <summary>
-/// Şarj soketi tipleri.
-/// Türkiye'de en yaygın olanlar: Type2 (AC) ve CCS (DC hızlı şarj).
-/// </summary>
 public enum ConnectorType
 {
     /// <summary>AC yavaş şarj — eski model, ABD standardı</summary>

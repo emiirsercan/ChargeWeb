@@ -2,9 +2,6 @@ using ChargingStations.Domain.Entities;
 
 namespace ChargingStations.Application.Interfaces.Repositories;
 
-/// <summary>
-/// Yorum repository interface'i.
-/// </summary>
 public interface IReviewRepository
 {
     /// <summary>Bir istasyona ait tüm yorumları getirir</summary>

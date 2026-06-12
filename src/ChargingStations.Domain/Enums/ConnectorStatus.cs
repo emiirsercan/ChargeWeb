@@ -1,8 +1,4 @@
 namespace ChargingStations.Domain.Enums;
-
-/// <summary>
-/// Tek bir şarj soketinin anlık durumu.
-/// </summary>
 public enum ConnectorStatus
 {
     /// <summary>Müsait — şarj yapılabilir</summary>

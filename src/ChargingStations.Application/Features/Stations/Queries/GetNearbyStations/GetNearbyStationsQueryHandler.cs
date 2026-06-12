@@ -4,25 +4,6 @@ using MediatR;
 
 namespace ChargingStations.Application.Features.Stations.Queries.GetNearbyStations;
 
-/// <summary>
-/// Yakındaki istasyonları OpenChargeMap API'den çeker.
-///
-/// ─── ESKİ HALİ (DB'den) ────────────────────────────────────
-///   Handler → StationRepository → Supabase DB → Boş tablo!
-///
-/// ─── YENİ HALİ (OpenChargeMap'ten) ─────────────────────────
-///   Handler → Cache var mı? → Evet → Cache'ten dön
-///                            → Hayır → OpenChargeMapService → API çağrısı
-///                                      → Sonucu cache'le → Dön
-///
-/// ─── SENARYO ───────────────────────────────────────────────
-/// Kullanıcı haritayı açtı, Kadıköy'de (40.99, 29.03), 5 km içini istiyor
-///   1. Cache'e bak: "ocm:nearby:40.99:29.03:5" → yok
-///   2. OpenChargeMap API'ye iste → 23 istasyon döndü
-///   3. Cache'e yaz (15 dakika geçerli)
-///   4. Sonucu frontend'e dön
-///   5. 3 dakika sonra başka kullanıcı aynı bölgeyi sordu → cache'ten!
-/// </summary>
 public class GetNearbyStationsQueryHandler : IRequestHandler<GetNearbyStationsQuery, PagedResult<StationDto>>
 {
     private readonly IOpenChargeMapService _ocmService;

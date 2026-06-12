@@ -1,8 +1,5 @@
 namespace ChargingStations.Domain.Enums;
 
-/// <summary>
-/// Kullanıcı rolleri.
-/// </summary>
 public enum UserRole
 {
     /// <summary>Normal kullanıcı — yorum yapabilir, favori ekleyebilir</summary>

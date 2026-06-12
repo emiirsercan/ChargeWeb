@@ -2,19 +2,6 @@ using ChargingStations.Domain.Entities;
 
 namespace ChargingStations.Application.Interfaces.Repositories;
 
-/// <summary>
-/// Şarj istasyonu repository interface'i.
-/// 
-/// BU NEDEN INTERFACE?
-/// Application katmanı "veriyi nasıl çekeceğini" bilmez.
-/// Sadece "ne çekeceğini" tanımlar.
-/// Gerçek implementasyon (EF Core + PostgreSQL) Persistence katmanında yapılır.
-/// 
-/// Bu sayede:
-/// - Application katmanı veritabanından bağımsızdır
-/// - Test yazarken mock'layabilirsin
-/// - Veritabanını değiştirmek istersen sadece Persistence'ı değiştirirsin
-/// </summary>
 public interface IStationRepository
 {
     /// <summary>Tüm istasyonları getirir (pagination destekli)</summary>

@@ -8,29 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ChargingStations.Infrastructure.Services;
 
-/// <summary>
-/// JWT Token üretme servisi — "Gece Kulübünün Bileklik Makinesi"
-///
-/// ─── SENARYO ───────────────────────────────────────────────
-/// 1. Kullanıcı kapıya geldi (login endpoint'ine istek attı)
-/// 2. Bouncer kimliğini kontrol etti (email + şifre doğrulandı)
-/// 3. Bu sınıf devreye girer → bileklik (JWT token) üretir
-/// 4. Bilekliğin üzerinde yazıyor:
-///    - Kim olduğu (userId, email)
-///    - Ne yetkisi var (role: Admin/User)
-///    - Ne zaman süresi doluyor (exp)
-///    - Kim verdi (issuer: ChargeWebAPI)
-///    - Kime verildi (audience: ChargeWebClient)
-/// 5. Bileklik gizli bir mürekkeple imzalanmış (HMAC-SHA256)
-///    → Kimse taklit edemez, değiştiremez
-///
-/// ─── TOKEN'IN 3 PARÇASI ────────────────────────────────────
-/// eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOi...  .SflKxwRJSMeKKF2QT4fwpM...
-/// ├── HEADER ──────────┤├── PAYLOAD ───────┤├── SIGNATURE ──────────┤
-/// "Ben JWT'yim,          "Bu Emir'e ait,     "Bu imzayı sadece
-///  HS256 ile              Admin rolünde,      sunucu üretebilir"
-///  şifrelendim"           1 saat geçerli"
-/// </summary>
 public class TokenService : ITokenService
 {
     private readonly IConfiguration _configuration;
@@ -40,17 +17,6 @@ public class TokenService : ITokenService
         _configuration = configuration;
     }
 
-    /// <summary>
-    /// JWT Access Token üretir.
-    ///
-    /// Senaryo: Emir login oldu → Bu metot çağrıldı
-    ///   Input:  userId=abc-123, email=emir@test.com, role=Admin
-    ///   Output: "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOi..."
-    ///
-    /// Bu token'ı frontend localStorage'a kaydeder.
-    /// Her API isteğinde Header'da gönderir:
-    ///   Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
-    /// </summary>
     public string GenerateAccessToken(Guid userId, string email, string role)
     {
         // ── 1. Gizli anahtarı oku (appsettings.json → Jwt:Key) ──
@@ -108,19 +74,6 @@ public class TokenService : ITokenService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    /// <summary>
-    /// Refresh Token üretir — opaque (şeffaf olmayan) bir string.
-    ///
-    /// Senaryo: Access Token'ın süresi doldu (1 saat sonra)
-    ///   Kullanıcı tekrar login olmak zorunda kalmasın diye
-    ///   Refresh Token ile yeni bir Access Token alabilir.
-    ///
-    ///   Access Token = Gece kulübü bilekliği (1 saat geçerli)
-    ///   Refresh Token = Yenileme kuponu (7 gün geçerli)
-    ///
-    ///   Bileklik süresi dolunca → kuponu göster → yeni bileklik al
-    ///   Kuponu kaybedersen → tekrar kapıdan gir (login)
-    /// </summary>
     public string GenerateRefreshToken()
     {
         // 32 byte rastgele veri üret ve Base64'e çevir

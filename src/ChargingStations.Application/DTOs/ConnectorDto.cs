@@ -1,8 +1,4 @@
 namespace ChargingStations.Application.DTOs;
-
-/// <summary>
-/// Bağlantı noktası (connector) bilgisi — OpenChargeMap formatına uyumlu.
-/// </summary>
 public class ConnectorDto
 {
     /// <summary>Connector tipi (örn: "CCS (Type 2)", "CHAdeMO", "Type 2")</summary>

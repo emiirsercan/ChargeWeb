@@ -4,18 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ChargingStations.Persistence.Configurations;
-
-/// <summary>
-/// ChargingStation entity'sinin veritabanı yapılandırması.
-///
-/// ─── SENARYO ───────────────────────────────────────────────
-/// EF Core bize soruyor: "ChargingStation sınıfını tabloya nasıl çevireyim?"
-/// Biz de burada şunu diyoruz:
-///   - Tablo adı "stations" olsun
-///   - Name kolonu max 200 karakter, zorunlu olsun
-///   - Latitude/Longitude birlikte index'lensin (hızlı yakın arama için)
-///   - Connector'larla ilişki: "Bir istasyon silinirse connector'ları da silinsin"
-/// </summary>
 public class ChargingStationConfiguration : IEntityTypeConfiguration<ChargingStation>
 {
     public void Configure(EntityTypeBuilder<ChargingStation> builder)
@@ -67,9 +55,6 @@ public class ChargingStationConfiguration : IEntityTypeConfiguration<ChargingSta
             .IsRequired()
             .HasColumnType("double precision");
 
-        // ── Status Enum ────────────────────────────────────────
-        // PostgreSQL native enum yerine string olarak saklıyoruz.
-        // Neden? Supabase dashboard'da okunması kolay, migration'da sorun çıkmaz.
         builder.Property(s => s.Status)
             .HasConversion<string>()
             .HasMaxLength(50);

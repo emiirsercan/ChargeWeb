@@ -1,8 +1,4 @@
 namespace ChargingStations.Domain.Enums;
-
-/// <summary>
-/// Şarj istasyonunun genel durumu.
-/// </summary>
 public enum StationStatus
 {
     /// <summary>Aktif ve çalışıyor</summary>

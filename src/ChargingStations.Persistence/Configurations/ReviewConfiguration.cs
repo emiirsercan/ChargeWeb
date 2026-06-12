@@ -4,23 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ChargingStations.Persistence.Configurations;
 
-/// <summary>
-/// Review entity'sinin veritabanı yapılandırması.
-///
-/// ─── SENARYO ───────────────────────────────────────────────
-/// Kullanıcı "Emre" ZES Şişli'deki istasyonu kullandı.
-/// Uygulamadan 4 yıldız verdi ve "Hızlı şarj oldu, temiz yer" yazdı.
-///
-/// Bu yorum:
-///   UserId   = Emre'nin Guid'i
-///   StationId = ZES Şişli'nin Guid'i
-///   Rating   = 4
-///   Comment  = "Hızlı şarj oldu, temiz yer"
-///
-/// ─── KISIT ─────────────────────────────────────────────────
-/// Bir kullanıcı aynı istasyona sadece BİR yorum yapabilir.
-/// (Unique index: UserId + StationId birlikte unique)
-/// </summary>
 public class ReviewConfiguration : IEntityTypeConfiguration<Review>
 {
     public void Configure(EntityTypeBuilder<Review> builder)

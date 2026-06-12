@@ -5,27 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChargingStations.Persistence.Repositories;
 
-/// <summary>
-/// IStationRepository'nin EF Core + PostgreSQL implementasyonu.
-///
-/// ─── SENARYO ───────────────────────────────────────────────
-/// Bu sınıf, Application katmanının "veri isteklerini" gerçek SQL
-/// sorgularına çevirir. Handler şunu bilmez:
-///   - Veri nereden geliyor? (PostgreSQL, SQLite, API?)
-///   - LINQ sorguları nasıl SQL'e çevriliyor?
-///   - Join'ler nasıl yapılıyor?
-///
-/// Handler sadece şunu bilir:
-///   var stations = await _stationRepository.GetAllAsync(1, 20);
-///
-/// Arka planda bu SQL çalışır:
-///   SELECT s.*, c.*, r.*
-///   FROM stations s
-///   LEFT JOIN connectors c ON c.station_id = s.id
-///   LEFT JOIN reviews r ON r.station_id = s.id
-///   ORDER BY s.name
-///   LIMIT 20 OFFSET 0
-/// </summary>
 public class StationRepository : IStationRepository
 {
     private readonly AppDbContext _context;
@@ -34,16 +13,6 @@ public class StationRepository : IStationRepository
     {
         _context = context;
     }
-
-    /// <summary>
-    /// Tüm istasyonları sayfalı şekilde getirir.
-    /// Connectors ve Reviews de dahil edilir (eager loading).
-    ///
-    /// Eager Loading nedir?
-    /// → "Şu anda hepsini çek, tekrar veritabanına gitme"
-    /// → Include() ile belirtilir
-    /// → Alternatif: Lazy Loading (her erişimde ayrı sorgu — genelde kötü)
-    /// </summary>
     public async Task<IReadOnlyList<ChargingStation>> GetAllAsync(int page, int pageSize)
     {
         return await _context.Stations
@@ -55,14 +24,6 @@ public class StationRepository : IStationRepository
             .AsNoTracking()              // Performans: salt okunur, takip etme
             .ToListAsync();
     }
-
-    /// <summary>
-    /// ID ile tek bir istasyon getirir (tüm detaylarla).
-    ///
-    /// AsNoTracking() neden kullanılmıyor?
-    /// → Detay sayfasında güncelleme gerekebilir.
-    ///   Ama sadece okuma amaçlıysa sen de ekleyebilirsin.
-    /// </summary>
     public async Task<ChargingStation?> GetByIdAsync(Guid id)
     {
         return await _context.Stations
@@ -72,16 +33,6 @@ public class StationRepository : IStationRepository
             .Include(s => s.Favorites)
             .FirstOrDefaultAsync(s => s.Id == id);
     }
-
-    /// <summary>
-    /// Şehre göre filtreli istasyon listesi.
-    ///
-    /// WHERE city = 'İstanbul' LIMIT 20 OFFSET 0
-    ///
-    /// ToUpperInvariant() neden?
-    /// → "istanbul", "İstanbul", "ISTANBUL" hepsi eşleşsin diye
-    /// → Veritabanı seviyesinde ILIKE kullanmak daha iyi ama basit tutalım
-    /// </summary>
     public async Task<IReadOnlyList<ChargingStation>> GetByCityAsync(string city, int page, int pageSize)
     {
         return await _context.Stations
@@ -95,24 +46,6 @@ public class StationRepository : IStationRepository
             .ToListAsync();
     }
 
-    /// <summary>
-    /// Belirli bir konuma yakın istasyonları getirir.
-    ///
-    /// ─── HAVERSINE FORMÜLÜ ─────────────────────────────────
-    /// Dünya küre (aslında elipsoid ama yaklaşık küre diyelim).
-    /// İki nokta arasındaki mesafeyi hesaplamak için Haversine formülü:
-    ///
-    ///   d = 2R * arcsin(√(sin²(Δlat/2) + cos(lat1)*cos(lat2)*sin²(Δlon/2)))
-    ///   R = 6371 km (Dünya yarıçapı)
-    ///
-    /// EF Core bu formülü SQL'e çeviremez doğrudan.
-    /// Çözüm 1: Tüm istasyonları çek, C#'da hesapla → Kötü (binlerce kayıt!)
-    /// Çözüm 2: Ham SQL veya stored procedure
-    /// Çözüm 3: PostGIS (en iyi ama kurulum gerektirir)
-    ///
-    /// Şimdilik: Kaba filtreleme (lat/lng kutucuğu) + C#'da kesin hesap
-    /// Bu "bounding box" yaklaşımı: yaklaşık doğru, performanslı
-    /// </summary>
     public async Task<IReadOnlyList<ChargingStation>> GetNearbyAsync(
         double latitude,
         double longitude,

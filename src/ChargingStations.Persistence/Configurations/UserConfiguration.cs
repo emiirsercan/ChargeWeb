@@ -4,20 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ChargingStations.Persistence.Configurations;
 
-/// <summary>
-/// User entity'sinin veritabanı yapılandırması.
-///
-/// ─── GÜVENLİK NOTU ─────────────────────────────────────────
-/// PasswordHash alanı her zaman BCrypt ile hash'lenmiş şifreyi tutar.
-/// Veritabanında hiçbir zaman plain-text şifre bulunmaz.
-///
-/// Örnek:
-///   Gerçek şifre: "Abc123!"
-///   Veritabanındaki: "$2a$11$xnQ8gY..." (60 karakter BCrypt hash)
-///
-/// Bu hash'ten geriye şifreyi çözmek matematiksel olarak imkânsızdır.
-/// (BCrypt intentionally slow'dur — brute force'a karşı koruma)
-/// </summary>
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)

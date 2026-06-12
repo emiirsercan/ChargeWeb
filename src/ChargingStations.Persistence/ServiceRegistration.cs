@@ -7,31 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ChargingStations.Persistence;
-
-/// <summary>
-/// Persistence katmanının DI (Dependency Injection) kayıtları.
-///
-/// ─── SENARYO: DI Container Analojisi ──────────────────────
-/// DI Container'ı bir "fabrika" gibi düşün.
-///
-/// "IStationRepository lazım" diyorsun →
-/// Fabrika: "Tamam, sana StationRepository üreteyim" diyor
-/// ve AppDbContext'i de otomatik enjekte ediyor.
-///
-/// Biz burada sadece "fabrikaya tarif" veriyoruz:
-///   "IStationRepository geldiğinde → StationRepository ver"
-///   "IUnitOfWork geldiğinde → UnitOfWork ver"
-///
-/// ─── LIFETIME'LAR ──────────────────────────────────────────
-/// AddScoped → Her HTTP isteği için TEK bir instance (önerilen)
-/// AddSingleton → Uygulama boyunca TEK bir instance
-/// AddTransient → Her "isteme" için YENİ bir instance
-///
-/// DbContext ve Repository'ler neden Scoped?
-/// → Bir HTTP isteği birden fazla veritabanı işlemi yapabilir
-///   ama hepsi AYNI DbContext üzerinden olmalı (aynı transaction).
-///   Scoped bunu garanti eder.
-/// </summary>
 public static class ServiceRegistration
 {
     public static IServiceCollection AddPersistenceServices(

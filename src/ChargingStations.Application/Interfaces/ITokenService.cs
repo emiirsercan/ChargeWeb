@@ -1,9 +1,5 @@
 namespace ChargingStations.Application.Interfaces;
 
-/// <summary>
-/// JWT token oluşturma servisi interface'i.
-/// Login başarılı olduğunda access token + refresh token üretir.
-/// </summary>
 public interface ITokenService
 {
     /// <summary>Kullanıcı bilgilerinden JWT access token oluşturur</summary>

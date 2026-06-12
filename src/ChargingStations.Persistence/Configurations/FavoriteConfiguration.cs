@@ -4,22 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ChargingStations.Persistence.Configurations;
 
-/// <summary>
-/// Favorite entity'sinin veritabanı yapılandırması.
-///
-/// ─── SENARYO ───────────────────────────────────────────────
-/// Bu tablo aslında bir "köprü tablo" (junction table).
-/// User ve ChargingStation arasındaki Many-to-Many ilişkiyi temsil eder.
-///
-/// Neden ayrı bir entity yaptık, EF Core'un otomatik M-to-M yerine?
-///   → Çünkü "ne zaman favorilere eklendi?" bilgisini (CreatedAt)
-///     tutmak istiyoruz. Otomatik junction table bunu desteklemez.
-///
-/// Örnek veri:
-///   UserId = Emre'nin Id'si, StationId = ZES Şişli Id'si → Favori var
-///   UserId = Emre'nin Id'si, StationId = Eşarj Kadıköy Id'si → Favori var
-///   Emre'nin 2 favori istasyonu var demektir.
-/// </summary>
 public class FavoriteConfiguration : IEntityTypeConfiguration<Favorite>
 {
     public void Configure(EntityTypeBuilder<Favorite> builder)

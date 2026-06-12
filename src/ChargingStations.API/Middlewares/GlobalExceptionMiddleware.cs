@@ -4,35 +4,6 @@ using FluentValidation;
 
 namespace ChargingStations.API.Middlewares;
 
-/// <summary>
-/// Global Exception Handling Middleware — "Restoranın Hata Yönetim Müdürü"
-///
-/// ─── SENARYO ───────────────────────────────────────────────
-/// Bir restoranda düşün:
-///   Müşteri sipariş verdi → Garson mutfağa iletti → Mutfakta sorun çıktı!
-///
-/// KÖTÜ restoran (middleware yok):
-///   Mutfakta yangın çıktı → Garson panik yaptı → Müşteriye "500: Bir hata oluştu" dedi
-///   Müşteri: "Ne hatası? Ne yapmalıyım?" (hiçbir bilgi yok)
-///
-/// İYİ restoran (middleware var):
-///   Mutfakta malzeme bitti → Müdür araya girdi → Müşteriye kibarca:
-///   "Üzgünüz, istediğiniz ürün şu an mevcut değil. Alternatif önerebilir miyiz?"
-///
-/// Bu middleware o "müdür"dür:
-///   - Tüm hataları yakalar
-///   - Hata türüne göre doğru HTTP status code döner
-///   - Frontend'e anlamlı hata mesajı gönderir
-///   - Sunucu loglarına detaylı hata kaydeder
-///
-/// ─── MIDDLEWARE PIPELINE'DA YERİ ───────────────────────────
-/// Request → [ExceptionMiddleware] → [Auth] → [Controller] → Response
-///                   ↑                                ↓ (hata!)
-///                   └────────── Hata buraya düşer ────┘
-///
-/// Her şeyi saran bir "güvenlik ağı" gibi düşün.
-/// Controller'da ne hata olursa olsun, bu middleware yakalar.
-/// </summary>
 public class GlobalExceptionMiddleware
 {
     private readonly RequestDelegate _next;
@@ -53,21 +24,12 @@ public class GlobalExceptionMiddleware
         }
         catch (Exception ex)
         {
-            // Hata oluştu! Müdür devreye girdi.
             _logger.LogError(ex, "Beklenmeyen hata: {Message}", ex.Message);
             await HandleExceptionAsync(context, ex);
         }
     }
 
-    /// <summary>
-    /// Hata türüne göre uygun HTTP yanıtı oluşturur.
-    ///
-    /// Senaryo örnekleri:
-    ///   UnauthorizedAccessException → 401: "Email veya şifre hatalı"
-    ///   ValidationException         → 400: "Email alanı zorunludur"
-    ///   KeyNotFoundException        → 404: "İstasyon bulunamadı"
-    ///   Diğer                       → 500: "Sunucu hatası"
-    /// </summary>
+
     private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";

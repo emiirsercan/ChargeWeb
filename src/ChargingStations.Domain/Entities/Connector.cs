@@ -3,14 +3,6 @@ using ChargingStations.Domain.Enums;
 
 namespace ChargingStations.Domain.Entities;
 
-/// <summary>
-/// Şarj soketi (connector) entity'si.
-/// 
-/// Her istasyonda 1 veya daha fazla soket bulunur.
-/// Her soketin bir tipi (Type2, CCS vs.), gücü (kW) ve fiyatı vardır.
-/// 
-/// Örnek: Bir ZES istasyonunda 2x CCS (50kW) + 1x Type2 (22kW) olabilir.
-/// </summary>
 public class Connector : BaseEntity
 {
     /// <summary>Hangi istasyona ait (Foreign Key)</summary>

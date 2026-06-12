@@ -5,40 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace ChargingStations.Infrastructure.Services;
-
-/// <summary>
-/// OpenChargeMap API Client — "Çeviri Bürosunun Google Translate Bağlantısı"
-///
-/// ─── SENARYO ───────────────────────────────────────────────
-/// Restoranda garson olarak çalışıyorsun. Menüdeki yemeklerin
-/// malzeme listesini bilmiyorsun. Her seferinde mutfağa (DB'ye)
-/// gitmek yerine, tedarikçi firmanın (OpenChargeMap) web sitesinden
-/// güncel malzeme listesini çekiyorsun.
-///
-/// Bu sınıf o "tedarikçiyle iletişim hattı"dır:
-///   1. HTTP isteği hazırlar
-///   2. OpenChargeMap API'ye gönderir
-///   3. JSON cevabı parse eder
-///   4. Bizim DTO'larımıza dönüştürür
-///   5. Handler'a temiz veri verir
-///
-/// ─── API ENDPOINT ──────────────────────────────────────────
-/// Base URL: https://api.openchargemap.io/v3/poi
-/// 
-/// Parametreler:
-///   ?latitude=41.01&longitude=28.97    → Koordinatlar
-///   &distance=5&distanceunit=KM         → Yarıçap
-///   &maxresults=50                       → Max sonuç
-///   &compact=true&verbose=false          → Küçük JSON
-///   &key=YOUR_API_KEY                    → API anahtarı
-///
-/// ─── HATA YÖNETİMİ ────────────────────────────────────────
-/// OpenChargeMap çökerse ne olur?
-///   → try/catch ile yakalıyoruz
-///   → Boş liste dönüyoruz (uygulama çökmez!)
-///   → Loglara hata kaydediyoruz
-///   → Cache varsa eski veriyi kullanabiliriz
-/// </summary>
 public class OpenChargeMapService : IOpenChargeMapService
 {
     private readonly HttpClient _httpClient;

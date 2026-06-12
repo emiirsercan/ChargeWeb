@@ -1,15 +1,4 @@
 namespace ChargingStations.Application.Interfaces;
-
-/// <summary>
-/// Cache servisi interface'i.
-/// 
-/// Application katmanı sadece "cache'le" ve "cache'ten oku" der.
-/// Redis mi, In-Memory mi olduğunu bilmez — o karar Infrastructure'da verilir.
-/// 
-/// Başlangıçta In-Memory cache ile başlayabiliriz,
-/// ölçekleme gerektiğinde Redis'e geçiş sadece Infrastructure'daki
-/// implementasyonu değiştirmek kadar kolay olur.
-/// </summary>
 public interface ICacheService
 {
     /// <summary>Cache'ten veri okur. Yoksa null döner.</summary>

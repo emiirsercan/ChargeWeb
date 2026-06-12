@@ -3,12 +3,6 @@ using ChargingStations.Domain.Enums;
 
 namespace ChargingStations.Domain.Entities;
 
-/// <summary>
-/// Kullanıcı entity'si.
-/// 
-/// Şifre hash'lenerek saklanır (plain text asla!).
-/// Her kullanıcının bir rolü vardır (User, Admin, StationOwner).
-/// </summary>
 public class User : BaseEntity
 {
     /// <summary>Kullanıcının email adresi (unique, login için kullanılır)</summary>

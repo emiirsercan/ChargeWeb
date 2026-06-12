@@ -4,17 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ChargingStations.Persistence.Configurations;
 
-/// <summary>
-/// Connector entity'sinin veritabanı yapılandırması.
-///
-/// ─── SENARYO ───────────────────────────────────────────────
-/// Bir şarj istasyonundaki her soket ayrı bir Connector kaydı.
-/// ZES'in Şişli istasyonunda:
-///   - Connector 1: Type2, 22kW, 4.50 TL/kWh
-///   - Connector 2: CCS, 50kW, 5.20 TL/kWh
-///   - Connector 3: CCS, 50kW, 5.20 TL/kWh (boş)
-/// Her birinin durumu (Available/InUse/Faulted) ayrı takip edilir.
-/// </summary>
 public class ConnectorConfiguration : IEntityTypeConfiguration<Connector>
 {
     public void Configure(EntityTypeBuilder<Connector> builder)
