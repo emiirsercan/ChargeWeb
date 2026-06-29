@@ -20,6 +20,9 @@
 
     <!-- DI: IServiceCollection extension metotları için -->
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.4" />
+
+    <!-- EF Core: StationSyncService'de DbContext erişimi için -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
   </ItemGroup>
 
   <!-- Proje Referansları -->
@@ -28,6 +31,8 @@
     <ProjectReference Include="..\ChargingStations.Domain\ChargingStations.Domain.csproj" />
     <!-- Infrastructure → Application: ICacheService gibi interface'leri implement eder -->
     <ProjectReference Include="..\ChargingStations.Application\ChargingStations.Application.csproj" />
+    <!-- Infrastructure → Persistence: StationSyncService AppDbContext'e erişir -->
+    <ProjectReference Include="..\ChargingStations.Persistence\ChargingStations.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

@@ -31,11 +31,11 @@ public class StationsController : ControllerBase
     }
 
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(StationDetailDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(Guid id)
     {
         var query = new GetStationByIdQuery(id);
         var result = await _mediator.Send(query);

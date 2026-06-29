@@ -21,6 +21,9 @@ public static class ServiceRegistration
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
+        // ── StationSyncService: OCM → DB senkronizasyon ──
+        services.AddScoped<IStationSyncService, StationSyncService>();
+
         return services;
     }
 }

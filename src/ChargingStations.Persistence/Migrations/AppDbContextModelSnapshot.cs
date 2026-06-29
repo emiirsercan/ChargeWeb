@@ -67,6 +67,9 @@ namespace ChargingStations.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<int>("OcmId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("OperatorName")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -88,6 +91,10 @@ namespace ChargingStations.Persistence.Migrations
 
                     b.HasIndex("City")
                         .HasDatabaseName("ix_stations_city");
+
+                    b.HasIndex("OcmId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_stations_ocm_id_unique");
 
                     b.HasIndex("Status")
                         .HasDatabaseName("ix_stations_status");

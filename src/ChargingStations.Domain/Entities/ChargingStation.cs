@@ -10,6 +10,9 @@ namespace ChargingStations.Domain.Entities;
 /// Bir istasyon birden fazla kullanıcı tarafından favorilere eklenebilir.
 public class ChargingStation : BaseEntity
 {
+    /// OpenChargeMap'teki benzersiz ID (sync ile eşleştirme için)
+    public int OcmId { get; set; }
+
     ///İstasyonun adı 
     public string Name { get; set; } = string.Empty;
 

@@ -141,6 +141,29 @@ public class StationRepository : IStationRepository
         return await _context.Stations.AnyAsync(s => s.Id == id);
     }
 
+    public void Update(ChargingStation station)
+    {
+        _context.Stations.Update(station);
+    }
+
+    public async Task<IReadOnlyList<ChargingStation>> GetAllByOcmIdsAsync(List<int> ocmIds)
+    {
+        return await _context.Stations
+            .Include(s => s.Connectors)
+            .Where(s => ocmIds.Contains(s.OcmId))
+            .ToListAsync();
+    }
+
+    public async Task<ChargingStation?> GetByOcmIdAsync(int ocmId)
+    {
+        return await _context.Stations
+            .Include(s => s.Connectors)
+            .Include(s => s.Reviews)
+                .ThenInclude(r => r.User)
+            .Include(s => s.Favorites)
+            .FirstOrDefaultAsync(s => s.OcmId == ocmId);
+    }
+
     // ── Yardımcı Metod: Haversine Formülü ──────────────────────
     private static double CalculateDistanceKm(double lat1, double lon1, double lat2, double lon2)
     {

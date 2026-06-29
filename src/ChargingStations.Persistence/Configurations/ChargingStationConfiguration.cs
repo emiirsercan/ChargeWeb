@@ -15,6 +15,12 @@ public class ChargingStationConfiguration : IEntityTypeConfiguration<ChargingSta
         builder.HasKey(s => s.Id);
         builder.Property(s => s.Id).ValueGeneratedNever(); // Guid'i koddan üretiyoruz
 
+        // ── OcmId — OpenChargeMap entegrasyonu ─────────────────
+        builder.Property(s => s.OcmId).IsRequired();
+        builder.HasIndex(s => s.OcmId)
+            .IsUnique()
+            .HasDatabaseName("ix_stations_ocm_id_unique");
+
         // ── Zorunlu Alanlar ────────────────────────────────────
         builder.Property(s => s.Name)
             .IsRequired()

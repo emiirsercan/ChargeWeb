@@ -24,14 +24,7 @@ public static class ServiceRegistration
                     // Migration assembly: dotnet ef migration komutunun
                     // hangi projede çalıştığını belirtir
                     npgsqlOptions.MigrationsAssembly("ChargingStations.Persistence");
-
-                    // Geçici bağlantı hatalarında otomatik tekrar dene
-                    // (Supabase cold start vs. için faydalı)
-                    npgsqlOptions.EnableRetryOnFailure(
-                        maxRetryCount: 3,
-                        maxRetryDelay: TimeSpan.FromSeconds(5),
-                        errorCodesToAdd: null
-                    );
+                    npgsqlOptions.CommandTimeout(120);
                 }
             );
         });

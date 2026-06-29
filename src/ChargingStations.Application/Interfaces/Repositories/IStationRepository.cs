@@ -31,6 +31,15 @@ public interface IStationRepository
     /// <summary>İstasyon günceller</summary>
     Task UpdateAsync(ChargingStation station);
 
+    /// <summary>İstasyonu senkron günceller (sync servisi için)</summary>
+    void Update(ChargingStation station);
+
+    /// <summary>OcmId listesine göre istasyonları toplu getirir (sync için)</summary>
+    Task<IReadOnlyList<ChargingStation>> GetAllByOcmIdsAsync(List<int> ocmIds);
+
+    /// <summary>OcmId ile tek istasyon getirir</summary>
+    Task<ChargingStation?> GetByOcmIdAsync(int ocmId);
+
     /// <summary>İstasyon siler</summary>
     Task DeleteAsync(ChargingStation station);
 

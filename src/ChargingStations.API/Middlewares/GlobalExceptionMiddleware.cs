@@ -66,8 +66,10 @@ public class GlobalExceptionMiddleware
             // ── 500 Internal Server Error ──
             // Senaryo: Beklenmeyen bir hata (veritabanı bağlantısı koptu vs.)
             _ => (HttpStatusCode.InternalServerError,
-                  "Beklenmeyen bir sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
-                  (object?)null)
+                  exception.InnerException?.InnerException?.Message 
+                      ?? exception.InnerException?.Message 
+                      ?? exception.Message,
+                  (object?)exception.StackTrace)
         };
 
         context.Response.StatusCode = (int)statusCode;

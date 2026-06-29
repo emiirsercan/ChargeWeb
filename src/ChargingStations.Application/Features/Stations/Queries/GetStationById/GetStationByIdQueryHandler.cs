@@ -1,73 +1,53 @@
 using ChargingStations.Application.DTOs;
-using ChargingStations.Application.Interfaces;
+using ChargingStations.Application.Interfaces.Repositories;
 using MediatR;
 
 namespace ChargingStations.Application.Features.Stations.Queries.GetStationById;
 
-/// <summary>
-/// Tek istasyonun detayını OpenChargeMap'ten çeker.
-///
-/// ─── SENARYO ───────────────────────────────────────────────
-/// Kullanıcı haritada bir istasyona tıkladı → ID: 54321
-///   1. Cache'e bak: "ocm:station:54321" → yok
-///   2. OpenChargeMap API → chargepointid=54321
-///   3. Detaylı bilgi geldi (connector'lar dahil)
-///   4. Cache'e yaz (10 dakika)
-///   5. Frontend'e dön
-/// </summary>
 public class GetStationByIdQueryHandler : IRequestHandler<GetStationByIdQuery, StationDetailDto?>
 {
-    private readonly IOpenChargeMapService _ocmService;
-    private readonly ICacheService _cacheService;
+    private readonly IStationRepository _stationRepository;
+    private readonly IReviewRepository _reviewRepository;
 
     public GetStationByIdQueryHandler(
-        IOpenChargeMapService ocmService,
-        ICacheService cacheService)
+        IStationRepository stationRepository,
+        IReviewRepository reviewRepository)
     {
-        _ocmService = ocmService;
-        _cacheService = cacheService;
+        _stationRepository = stationRepository;
+        _reviewRepository = reviewRepository;
     }
 
     public async Task<StationDetailDto?> Handle(GetStationByIdQuery request, CancellationToken cancellationToken)
     {
-        var cacheKey = $"ocm:station:{request.OcmId}";
-        var cached = await _cacheService.GetAsync<StationDetailDto>(cacheKey);
+        var station = await _stationRepository.GetByIdAsync(request.Id);
 
-        if (cached != null)
-            return cached;
+        if (station is null)
+            throw new KeyNotFoundException($"İstasyon bulunamadı: {request.Id}");
 
-        var ocmStation = await _ocmService.GetStationByIdAsync(request.OcmId);
+        var avgRating = await _reviewRepository.GetAverageRatingAsync(station.Id);
 
-        if (ocmStation is null)
-            throw new KeyNotFoundException($"İstasyon bulunamadı: {request.OcmId}");
-
-        var detail = new StationDetailDto
+        return new StationDetailDto
         {
-            OcmId = ocmStation.OcmId,
-            Name = ocmStation.Name,
-            Address = ocmStation.Address,
-            City = ocmStation.Town,
-            District = ocmStation.StateOrProvince,
-            Country = ocmStation.Country,
-            Latitude = ocmStation.Latitude,
-            Longitude = ocmStation.Longitude,
-            OperatorName = ocmStation.OperatorName,
-            StatusText = ocmStation.StatusType,
-            UsageType = ocmStation.UsageType,
-            DateLastStatusUpdate = ocmStation.DateLastStatusUpdate,
-            Connectors = ocmStation.Connections.Select(c => new ConnectorDto
+            Id = station.Id,
+            OcmId = station.OcmId,
+            Name = station.Name,
+            Address = station.Address,
+            City = station.City,
+            District = station.District,
+            Latitude = station.Latitude,
+            Longitude = station.Longitude,
+            OperatorName = station.OperatorName,
+            StatusText = station.Status.ToString(),
+            AverageRating = avgRating,
+            ReviewCount = station.Reviews.Count,
+            Connectors = station.Connectors.Select(c => new ConnectorDto
             {
-                ConnectionType = c.ConnectionType,
+                ConnectionType = c.Type.ToString(),
                 PowerKW = c.PowerKW,
-                CurrentType = c.CurrentType,
-                Quantity = c.Quantity,
-                Status = c.Status
+                CurrentType = c.PowerKW >= 50 ? "DC" : "AC",
+                Quantity = 1,
+                Status = c.Status.ToString()
             }).ToList()
         };
-
-        // 10 dakika cache'le
-        await _cacheService.SetAsync(cacheKey, detail, TimeSpan.FromMinutes(10));
-
-        return detail;
     }
 }
